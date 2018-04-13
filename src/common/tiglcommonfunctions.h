@@ -231,4 +231,9 @@ TIGL_EXPORT double GetArea(const TopoDS_Shape &shape);
 //       OF THE EDGES, BUT DOES NOT COMPARE THE CURVES EXACTLY
 TIGL_EXPORT TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape);
 
+inline double Radians(double degree)
+{
+    return degree / 180. * M_PI;
+}
+
 #endif // TIGLCOMMONFUNCTIONS_H
