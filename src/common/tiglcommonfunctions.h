@@ -231,4 +231,8 @@ TIGL_EXPORT double GetArea(const TopoDS_Shape &shape);
 //       OF THE EDGES, BUT DOES NOT COMPARE THE CURVES EXACTLY
 TIGL_EXPORT TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape);
 
+TopoDS_Shape transformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+TopoDS_Shape transformedShape(const tigl::CCPACSWing& wing, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+TopoDS_Shape transformedShape(const tigl::CCPACSFuselage& fuselage, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+
 #endif // TIGLCOMMONFUNCTIONS_H

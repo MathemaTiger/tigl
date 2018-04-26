@@ -1456,3 +1456,26 @@ bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
 
     return ((algo.State() == TopAbs_IN) != shapeIsReversed ) || (algo.State() == TopAbs_ON);
 }
+
+TopoDS_Shape transformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+{
+    switch (cs) {
+    case WING_COORDINATE_SYSTEM:
+        return shape;
+    case GLOBAL_COORDINATE_SYSTEM:
+        return transformationToGlobal.Transform(shape);
+    default:
+        throw tigl::CTiglError("Invalid coordinate system");
+    }
+}
+
+TopoDS_Shape transformedShape(const tigl::CCPACSWing& wing, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+{
+    return transformedShape(wing.GetTransformationMatrix(), cs, shape);
+}
+
+TopoDS_Shape transformedShape(const tigl::CCPACSFuselage& fuselage, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+{
+    return transformedShape(fuselage.GetTransformationMatrix(), cs, shape);
+}
+

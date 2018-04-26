@@ -73,8 +73,10 @@ public:
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing() const;
 
-    TIGL_EXPORT TopoDS_Shape GetInnerClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
-    TIGL_EXPORT TopoDS_Shape GetOuterClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Shape GetInnerClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                             TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
+    TIGL_EXPORT TopoDS_Shape GetOuterClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                             TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
 
     // Gets the upper point in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi) const;
@@ -145,16 +147,13 @@ public:
                                       double eta4, double xsi4) const;
 
     // helper function to get the inner transformed chord line wire, used in GetLoft and when determining triangulation midpoints projection on segments in VtkExport
-    TIGL_EXPORT TopoDS_Wire GetInnerWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Wire GetInnerWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                         TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
 
     // helper function to get the outer transformed chord line wire, used in GetLoft and when determining triangulation midpoints projection on segments in VtkExport
-    TIGL_EXPORT TopoDS_Wire GetOuterWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Wire GetOuterWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                         TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
 
-    // Getter for inner wire of opened profile (containing trailing edge)
-    TIGL_EXPORT TopoDS_Wire GetInnerWireOpened(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
-
-    // Getter for outer wire of opened profile (containing trailing edge)
-    TIGL_EXPORT TopoDS_Wire GetOuterWireOpened(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // projects a point unto the wing and returns its coordinates
     TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi) const;
@@ -171,13 +170,19 @@ public:
     TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane) const;
 
     // Returns the lower Surface of this Segment
-    TIGL_EXPORT Handle(Geom_Surface) GetLowerSurface(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT Handle(Geom_Surface) GetLowerSurface(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                                     TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
 
     // Returns the upper Surface of this Segment
-    TIGL_EXPORT Handle(Geom_Surface) GetUpperSurface(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT Handle(Geom_Surface) GetUpperSurface(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                                     TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
 
-    TIGL_EXPORT TopoDS_Shape& GetUpperShape(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
-    TIGL_EXPORT TopoDS_Shape& GetLowerShape(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Shape GetUpperShape(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                           TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
+    TIGL_EXPORT TopoDS_Shape GetLowerShape(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                           TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
+    TIGL_EXPORT TopoDS_Shape GetTrailingEdgeShape(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                                  TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
 
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -236,18 +241,13 @@ private:
 
     struct SurfaceCache
     {
-        double               mySurfaceArea;    /**< Surface area of this segment            */
-        TopoDS_Shape         upperShape;       /**< Upper shape of this segment             */
-        TopoDS_Shape         lowerShape;       /**< Lower shape of this segment             */
-        TopoDS_Shape         upperShapeLocal;  /**< Upper shape of this segment in wing coordinate system */
-        TopoDS_Shape         lowerShapeLocal;  /**< Lower shape of this segment in wing coordinate system */
-        TopoDS_Shape         upperShapeOpened;
-        TopoDS_Shape         lowerShapeOpened;
-        TopoDS_Shape         trailingEdgeShape;
-        Handle(Geom_Surface) upperSurface;
-        Handle(Geom_Surface) lowerSurface;
-        Handle(Geom_Surface) upperSurfaceLocal;
-        Handle(Geom_Surface) lowerSurfaceLocal;
+        bool bluntTE;                        ///< Information whether trailing edge is blunt
+        double mySurfaceArea;                ///< Surface area of this segment
+        TopoDS_Shape upperShapeSharp;        ///< Upper shape of this segment with sharp trailing edge
+        TopoDS_Shape upperShapeBlunt;        ///< Upper shape of this segment with blunt trailing edge
+        TopoDS_Shape lowerShapeSharp;        ///< Lower shape of this segment with sharp trailing edge
+        TopoDS_Shape lowerShapeBlunt;        ///< Lower shape of this segment with blunt trailing edge
+        TopoDS_Shape trailingEdgeShapeBlunt; ///< Shape of blunt trailing edge
     };
     mutable boost::optional<SurfaceCache> surfaceCache;
 
