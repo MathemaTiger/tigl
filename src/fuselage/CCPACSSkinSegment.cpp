@@ -22,7 +22,7 @@ namespace tigl
 {
 CCPACSSkinSegment::CCPACSSkinSegment(CCPACSSkinSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSSkinSegment(parent, uidMgr)
-    , CTiglStringerFrameBorderedObject(*uidMgr, *parent->GetParent()->GetParent(), generated::CPACSSkinSegment::m_startFrameUID, generated::CPACSSkinSegment::m_endFrameUID, generated::CPACSSkinSegment::m_startStringerUID, generated::CPACSSkinSegment::m_endStringerUID)
+    , CTiglStringerFrameBorderedObject(*uidMgr, *parent->GetParent()->GetParent()->GetParent(), generated::CPACSSkinSegment::m_startFrameUID, generated::CPACSSkinSegment::m_endFrameUID, generated::CPACSSkinSegment::m_startStringerUID, generated::CPACSSkinSegment::m_endStringerUID)
 {
 }
 } // namespace tigl
